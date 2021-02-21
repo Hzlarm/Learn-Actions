@@ -1,0 +1,54 @@
+#
+# Copyright (c) 2020-2021 Hzlarm <hzlarm@gmail.com>
+
+# This is free software, licensed under the MIT License.
+# See /LICENSE for more information.
+#
+# https://github.com/Hzlarm/Learn-Actions
+# Description: Learn Github action to Build Openwrt
+# blog: <https://blog.csdn.net/hzlarm/article/details/113847470>
+
+name: Hello, Github Actions
+
+env:
+  MY_NAME: Hzlarm
+on:
+#  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'Mona the Octocat'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
+#  schedule:
+#    - cron: 0 18 * * 5
+jobs:
+  job1:
+    name: first job
+    needs: job2
+    runs-on: ubuntu-20.04
+    if: github.event.repository.owner.id == github.event.sender.id
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+      with:
+        ref: main
+    - name: Single CMD
+      run: echo "Hello World!"
+  job2:
+    name: second job
+    runs-on: macos-latest
+    steps:
+    - name: Multiple CMDs
+      env:
+        HI: Hello World!
+      run: |
+        echo $HI
+        echo My name is $MY_NAME
+        echo "Hello ${{ github.event.inputs.name }}!"
+        echo "- in ${{ github.event.inputs.home }}!"
+
